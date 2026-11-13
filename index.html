@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Forex Factory - Market Calendar</title>
+  <style>
+    :root{--bg:#0b111a;--card:#141b28;--text:#e9f0f6;--accent:#76e6a1}
+    html,body{margin:0;height:100%;font-family:Arial,system-ui,sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:900px;margin:0 auto;padding:20px}
+    .card{background:var(--card);border-radius:12px;padding:14px;margin:12px 0}
+    table{width:100%;border-collapse:collapse}
+    th,td{border-bottom:1px solid #2a2f3a;padding:8px;text-align:left}
+    .tag{display:inline-block;padding:2px 8px;border-radius:999px;background:#223047}
+    input{padding:6px;border-radius:6px;border:1px solid #334}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Forex Factory - Market Calendar</h1>
+    <div class="card">
+      <div class="row" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
+        <label>Filter: </label>
+        <select id="filter"><option value="all">All</option><option value="high">High impact</option><option value="medium">Medium</option></select>
+        <input id="q" placeholder="Search event..." />
+      </div>
+      <table aria-label="calendar">
+        <thead><tr><th>Time</th><th>Event</th><th>Impact</th></tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    (function(){
+      const rows=document.getElementById('rows');
+      const sample=[
+        {t:'08:00',e:'GDP Release',i:'high'},
+        {t:'10:30',e:'CPI (EU)',i:'medium'},
+        {t:'12:00',e:'FOMC Minutes',i:'high'},
+        {t:'14:00',e:'Retail Sales',i:'low'}
+      ];
+      function render(list){rows.innerHTML=list.map(r=>`<tr><td>${r.t}</td><td>${r.e}</td><td><span class="tag">${r.i}</span></td></tr>`).join('')}
+      render(sample);
+      // simple filter
+      document.getElementById('filter').addEventListener('change', apply);
+      document.getElementById('q').addEventListener('input', apply);
+      function apply(){
+        const q=document.getElementById('q').value.toLowerCase();
+        const f=document.getElementById('filter').value;
+        const list=sample.filter(r=>{
+          const ok = f==='all'||r.i===f;
+          const hit = q===''||r.e.toLowerCase().includes(q);
+          return ok && hit;
+        });
+        render(list);
+      }
+    })();
+  </script>
+</body>
+</html>
